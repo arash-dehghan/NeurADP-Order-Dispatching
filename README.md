@@ -4,8 +4,7 @@ This repository provides complementary code and data for the article [Neural App
 
 This paper tackles the challenges of same-day delivery, focusing on order dispatching and matching. It builds on existing research by introducing new features like batching and courier queues for more realistic dispatching, and expanding the problem scope to include larger-scale operations. The study applies a [NeurADP](https://arxiv.org/pdf/1911.08842.pdf) solution approach to the ultra-fast order dispatching problem, showcasing its effectiveness against traditional and DRL baselines. It also introduces specific datasets for order dispatching and evaluates solution quality through artificial bounds and sensitivity analysis. Overall, it advances the understanding and methods in order dispatching and same-day delivery, offering insights for practitioners and future research.
 
-`<img src="plots/improvement.png" alt="Improvement of NeurADP over baseline policies for ultra-fast order dispatching problem" width="300">`
-<!-- ![Improvement of NeurADP over baseline policies for ultra-fast order dispatching problem](plots/improvement.png) -->
+![Improvement of NeurADP over baseline policies for ultra-fast order dispatching problem](plots/improvement.png)
 
 ## Repository Structure
 * `data` - Files related to datasets and generating instances of order arrivals. 
