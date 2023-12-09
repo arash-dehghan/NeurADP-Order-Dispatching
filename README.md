@@ -29,6 +29,19 @@ This paper tackles the challenges of same-day delivery, focusing on order dispat
 * `plots` - Figures relating to experiment results.
 * `requirements.txt` - Requirements file for installation.
 
+## Simulation Parameters
+There are several variables which may be tuned when running the simulations. Below I provide a table of the parameter, their description, the default value, and the choices.
+
+| Parameter | Description | Data Type | Default | Choices |
+|--------------|-------------|-------------|-------------|-------------|
+|***n***|Number of couriers|***int***|15|[10,15,20]|
+|***data***|City used in simulation|***str***|Brooklyn|[Brooklyn, Chicago, Iowa, Bangalore]
+|***shift_length***|Duration of courier shifts|***int***|6|[1,2,...,24]
+|***dt***|Maximum allowed delay time|***float***|10.0| *any*
+|***vehicle_cap***|Maximum allowed vehicle capacity|***int***|3|[0,1,2...]|
+|***train_days***|Number of training days used|***int***|60|*any*|
+|***test_days***|Number of testing days used|***int***|20|*any*||
+
 ## Installation and Execution Setup
 In the following, I will describe how to setup a conda environment, initialise python, download CPLEX, and install necessary packages for setting up the repository in a virtual machine.
 ### (1) Install Conda
@@ -92,19 +105,6 @@ pip install tensorflow==1.15.0
 pip install tqdm
 pip install networkx
 ```
-
-## Simulation Parameters
-There are several variables which may be tuned when running the simulations. Below I provide a table of the parameter, their description, the default value, and the choices.
-
-| Parameter | Description | Data Type | Default | Choices |
-|--------------|-------------|-------------|-------------|-------------|
-|***n***|Number of couriers|***int***|15|[10,15,20]|
-|***data***|City used in simulation|***str***|Brooklyn|[Brooklyn, Chicago, Iowa, Bangalore]
-|***shift_length***|Duration of courier shifts|***int***|6|[1,2,...,24]
-|***dt***|Maximum allowed delay time|***float***|10.0| *any*
-|***vehicle_cap***|Maximum allowed vehicle capacity|***int***|3|[0,1,2...]|
-|***train_days***|Number of training days used|***int***|60|*any*|
-|***test_days***|Number of testing days used|***int***|20|*any*||
 
 ## Citing this Work
 To cite this work, please use the following:
