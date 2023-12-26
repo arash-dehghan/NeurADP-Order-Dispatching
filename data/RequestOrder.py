@@ -34,7 +34,7 @@ class RequestOrder(object):
         Returns:
             str: A string describing the order, including its ID, destination, and deadline.
         """
-        return(f'Order {self.id} ({self.destination}, {self.deadline})')
+        return (f'Order {self.id} ({self.destination}, {self.deadline})')
 
     def __repr__(self):
         """
