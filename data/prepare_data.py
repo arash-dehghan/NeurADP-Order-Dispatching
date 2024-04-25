@@ -44,7 +44,7 @@ class DataPreparation(object):
         """
         lat_band, lon_band =  abs((max(lats) - min(lats)) * self.variation_percentage), abs((max(lons) - min(lons)) * self.variation_percentage)
         avg_lat, avg_lon = numpy.average(lats), numpy.average(lons)
-        return (round(numpy.uniform(-lat_band, lat_band) + avg_lat, 4), round(numpy.uniform(-lon_band, lon_band) + avg_lon, 4))
+        return (round(np.uniform(-lat_band, lat_band) + avg_lat, 4), round(np.uniform(-lon_band, lon_band) + avg_lon, 4))
 
     def get_centre_point(self, locations):
         """
@@ -121,7 +121,7 @@ class DataPreparation(object):
                 end_coord = self.df.loc[end_loc]['coordinates']
                 travel_time_minutes = int(round(haversine(start_coord, end_coord) / (self.road_speed / 60)))
                 if travel_time_minutes != 0:
-                    travel_time_minutes +=  int(round(numpy.uniform(0, (self.speed_var * travel_time_minutes))))
+                    travel_time_minutes +=  int(round(np.uniform(0, (self.speed_var * travel_time_minutes))))
                 if (start_loc != end_loc) and (travel_time_minutes == 0):
                     travel_time_minutes = 1
                 dists.append(travel_time_minutes)
@@ -172,7 +172,7 @@ if __name__ == '__main__':
     parser.add_argument('-variation_percentage', '--variation_percentage', type=float , default=0.2)
     parser.add_argument('-speed_var', '--speed_var', type=float , default=0.3)
     parser.add_argument('-num_locations', '--num_locations', type=int , default=1000)
-    parser.add_argument('-road_speed', '--road_speed', type=float, default=30.0) #km/h
+    parser.add_argument('-road_speed', '--road_speed', type=float, default=20.0) #km/h
     parser.add_argument('-epoch_length', '--epoch_length', type=int , default=5)
     parser.add_argument('-seed', '--seed', type=int , default=1)
     args = parser.parse_args()
