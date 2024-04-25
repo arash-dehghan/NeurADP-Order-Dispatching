@@ -115,7 +115,7 @@ def run_epoch(envt, central_agent, value_function, requests, request_generator, 
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser()
 	parser.add_argument('-n', '--numagents', type=int, default=15)
-	parser.add_argument('-data', '--data', type=str, choices=['Bangalore', 'Chicago', 'Brooklyn', 'Iowa'], default='Bangalore')
+	parser.add_argument('-data', '--data', type=str, choices=['Bangalore', 'Chicago', 'Brooklyn', 'Iowa'], default='Brooklyn')
 	parser.add_argument('-shift_length', '--shift_length', type=int , default=6)
 	parser.add_argument('-variation_percentage', '--variation_percentage', type=float , default=0.2)
 	parser.add_argument('-speed_var', '--speed_var', type=float , default=0.3)
@@ -123,7 +123,7 @@ if __name__ == '__main__':
 	parser.add_argument('-road_speed', '--road_speed', type=float, default=20.0) #km/h
 	parser.add_argument('-epoch_length', '--epoch_length', type=int , default=5)
 	parser.add_argument('-dt', '--delaytime', type=float, default=10)
-	parser.add_argument('-vehicle_cap', '--capacity', type=int, default=4)
+	parser.add_argument('-vehicle_cap', '--capacity', type=int, default=3)
 	parser.add_argument('-shift_style', '--shift_style', type=str, default='realistic')
 	parser.add_argument('-train_days', '--train_days', type=int, default=60)
 	parser.add_argument('-test_days', '--test_days', type=int, default=20)
