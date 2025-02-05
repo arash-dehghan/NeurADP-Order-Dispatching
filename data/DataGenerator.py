@@ -9,7 +9,6 @@ class DataGenerator(object):
     Attributes:
         data (str): City name of data used.
         variation_percentage (float): Percentage variation in data generation.
-        speed_var (float): Speed variation factor.
         num_locations (int): Number of locations to consider.
         road_speed (float): Average road speed.
         epoch_length (int): Length of each time epoch in minutes.
@@ -19,14 +18,13 @@ class DataGenerator(object):
         np (numpy.random.RandomState): Numpy random state for generating random numbers.
     """
 
-    def __init__(self, data, variation_percentage, speed_var, num_locations, road_speed, epoch_length, dist, df, seed):
+    def __init__(self, data, variation_percentage, num_locations, road_speed, epoch_length, dist, df, seed):
         """
         The constructor for DataGenerator class.
 
         Parameters:
             data (str): City name of data used.
             variation_percentage (float): Percentage variation in data generation.
-            speed_var (float): Speed variation factor.
             num_locations (int): Number of locations to consider.
             road_speed (float): Average road speed.
             epoch_length (int): Length of each time epoch in minutes.
@@ -36,7 +34,6 @@ class DataGenerator(object):
         """
         self.data = data
         self.variation_percentage = variation_percentage
-        self.speed_var = speed_var
         self.num_locations = num_locations
         self.road_speed = road_speed
         self.epoch_length = epoch_length

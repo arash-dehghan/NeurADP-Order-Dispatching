@@ -8,6 +8,7 @@ class Environment():
 	number of locations, and other relevant settings.
 
 	Attributes:
+		filename (str): Name of file for data generation.
 		travel_time (numpy.ndarray): Matrix of travel times between locations.
 		num_locations (int): Number of locations in the environment.
 		num_days_trained (int): Number of days the environment has been trained for.
@@ -21,11 +22,12 @@ class Environment():
 		M (int): Maximum value used for certain calculations in the environment.
 	"""
 
-	def __init__(self, num_agents, epoch_length, car_cap, data, shift_length, road_speed):
+	def __init__(self, filename, num_agents, epoch_length, car_cap, data, road_speed, delay_type, breaks_included):
 		"""
 		Constructor for Environment class.
 
 		Parameters:
+			filename (str): Name of file for data generation.
 			num_agents (int): Number of agents operating in the environment.
 			epoch_length (int): Length of each time epoch.
 			car_cap (int): Capacity of each car/agent in terms of number of orders.
@@ -33,16 +35,25 @@ class Environment():
 			shift_length (int): Length of each agent's shift.
 			road_speed (float): Average road speed.
 		"""
-		self.travel_time = read_csv(f'../data/datasets/{data}/travel_time_{int(road_speed)}.csv', header=None).values
+		self.filename = filename
+		city, epoch_length, road_speed, _, boundedness, delaytime, seed = self.filename.split('_')
+		self.city = city
+		self.epoch_length = int(epoch_length)
+		self.road_speed = float(road_speed)
+		self.boundedness = boundedness
+		self.delaytime = float(delaytime)
+		self.delay_type = delay_type
+		self.breaks_included = breaks_included
+		self.seed = int(seed)
+		self.travel_time = read_csv(f'../data/datasets/{data}/travel_time_{self.filename}.csv', header=None).values
 		self.num_locations = len(self.travel_time)
 		self.num_days_trained = 0
 		self.num_agents = num_agents
 		self.start_epoch = 0
 		self.stop_epoch = 1440
-		self.epoch_length = epoch_length
 		self.car_capacity = car_cap
 		self.current_time = 0
-		self.shift_length = shift_length
+		self.shift_length = 6
 		self.M = self.get_M_value()
 
 	def get_M_value(self):
@@ -72,7 +83,7 @@ class Environment():
 		"""
 		return self.travel_time[source, destination]
 
-	def _check_break_status(self, agent):
+	def _check_break_status(self, agent, time):
 		"""
 		Checks if an agent is currently on a break.
 
@@ -82,7 +93,7 @@ class Environment():
 		Returns:
 			bool: True if the agent is on break, False otherwise.
 		"""
-		return (self.current_time < agent.shift_start) or (self.current_time >= agent.shift_end)
+		return (time < agent.shift_start) or (time >= agent.shift_end)
 
 	def _get_ordering_return_time(self, orders):
 		"""
@@ -105,21 +116,39 @@ class Environment():
 			location_arrival_times[next_location] = time
 		return location_arrival_times[0]
 
-	def simulate_vehicle_motion(self, agent):
-		"""
-		Simulates the motion of a vehicle or agent within the environment. This method updates 
-		the agent's status based on its current position (at the warehouse or delivering orders), 
-		time until return, and the orders it has to pick up.
+	def _get_order_delivery_durations(self, agent, time):
+		original_time = time
+		orders = deepcopy(agent.orders_to_pickup)
+		ordering = [order.destination for order in orders]
+		unique_ordering = list(dict.fromkeys(ordering))
+		full_ordering = [0] + unique_ordering + [0]
+		location_arrival_times = {}
+		for index, location in enumerate(full_ordering[:-1]):
+			next_location = full_ordering[index + 1]
+			time += self.travel_time[location][next_location]
+			location_arrival_times[next_location] = time
 
-		Parameters:
-			agent (Agent): The agent for which to simulate motion.
-		"""
-		# If agent is not on their break
-		if not self._check_break_status(agent):
+		# How long it will take to return to warehouse based on this delivery
+		delivery_duration = location_arrival_times[0] - original_time
+
+		# Number of orders in delivery
+		delivery_number_of_orders = len(orders)
+
+		# Percentage of allowed delay deadline used 
+		delivery_deadline_differences = [(location_arrival_times[order.destination] - order.origin_time) / (order.deadline - order.origin_time) for order in orders]
+		
+		return delivery_duration, delivery_number_of_orders, delivery_deadline_differences
+
+
+	def simulate_vehicle_motion(self, agent, time):
+		delivery_duration, delivery_number_of_orders, delivery_deadline_differences = None, None, []
+
+		if not self._check_break_status(agent, time):
 			# If the agent is currently at the warehouse at the beginning of decision epoch
 			if agent.time_until_return == 0:
 				# If the agent has orders it needs to deliver (i.e. the action assigned to it was to deliver some new orders)
 				if len(agent.orders_to_pickup) > 0:
+					delivery_duration, delivery_number_of_orders, delivery_deadline_differences = self._get_order_delivery_durations(agent, time)
 					agent.time_until_return = max((self._get_ordering_return_time(agent.orders_to_pickup) - self.epoch_length), 0)
 					agent.orders_to_pickup = []
 				else:
@@ -135,20 +164,20 @@ class Environment():
 				else:
 					# If the agent has more orders it needs to pick up and deliver when it gets back to the warehouse
 					if len(agent.orders_to_pickup) > 0:
+						delivery_duration, delivery_number_of_orders, delivery_deadline_differences = self._get_order_delivery_durations(agent, time + agent.time_until_return)
 						agent.time_until_return = max(self._get_ordering_return_time(agent.orders_to_pickup) - (self.epoch_length - agent.time_until_return),0)
 						agent.orders_to_pickup = []
 					# If the agent has no more orders to pickup and deliver when it gets back to the warehouse
 					else:
 						assert not len(agent.orders_to_pickup)
 						agent.time_until_return = 0
-		new_time = self.current_time + self.epoch_length
+
+		new_time = time + self.epoch_length
 		# Check if in the next time-step the agent should be on their break
-		if (new_time < agent.shift_start) and (new_time >= agent.shift_end):
+		if new_time >= agent.shift_end:
 			assert not agent.time_until_return
 			assert not len(agent.orders_to_pickup)
 
-
-
-
+		return delivery_duration, delivery_number_of_orders, delivery_deadline_differences
 
 					

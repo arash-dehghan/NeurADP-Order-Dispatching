@@ -23,7 +23,7 @@ class ReplayBuffer(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def add(self, experience: Experience):
+    def add(self, experience):
         raise NotImplementedError
 
     @abstractmethod
@@ -43,24 +43,24 @@ class SimpleReplayBuffer(ReplayBuffer):
         """
         super(SimpleReplayBuffer, self).__init__(MAX_LEN)
 
-        self._storage: List[Experience] = []
+        self._storage = []
         self._maxsize: int = MAX_LEN
         self._next_idx: int = 0
 
     def __len__(self) -> int:
         return len(self._storage)
 
-    def add(self, experience: Experience):
+    def add(self, experience):
         if self._next_idx >= len(self._storage):
             self._storage.append(experience)
         else:
             self._storage[self._next_idx] = experience
         self._next_idx = (self._next_idx + 1) % self._maxsize
 
-    def _encode_sample(self, idxes: List[int]) -> List[Experience]:
+    def _encode_sample(self, idxes: List[int]):
         return [self._storage[i] for i in idxes]
 
-    def sample(self, batch_size: int) -> List[Experience]:
+    def sample(self, batch_size: int):
         """Sample a batch of experiences.
 
         Parameters
@@ -107,7 +107,7 @@ class PrioritizedReplayBuffer(SimpleReplayBuffer):
         self._it_min = MinSegmentTree(it_capacity)
         self._max_priority = 1.0
 
-    def add(self, experience: Experience):
+    def add(self, experience):
         """See SimpleReplayBuffer.store_effect"""
         idx = self._next_idx
         super().add(experience)
@@ -124,7 +124,7 @@ class PrioritizedReplayBuffer(SimpleReplayBuffer):
             res.append(idx)
         return res
 
-    def sample(self, batch_size: int, beta: float=0.4) -> Tuple[List[Experience], np.ndarray, List[int]]:  # type: ignore
+    def sample(self, batch_size: int, beta: float=0.4):  # type: ignore
         """Sample a batch of experiences.
 
         compared to SimpleReplayBuffer.sample
