@@ -41,6 +41,9 @@ There are several variables which may be tuned when running the simulations. Bel
 |***shift_length***|Duration of courier shifts|***int***|6|[1,2,...,24]
 |***dt***|Maximum allowed delay time|***float***|10.0| *any*
 |***vehicle_cap***|Maximum allowed vehicle capacity|***int***|3|[0,1,2...]|
+|***boundedness***|Whether the radius of destinations considered is bounded|***str***|bounded|[bounded, unbounded]|
+|***delay_type***|Delay setting to use|***str***|getir|[getir, normal]|
+|***breaks_included***|Whether to allow couriers to be matched while on their break|***bin***|1|[1,0]|
 |***train_days***|Number of training days used|***int***|60|*any*|
 |***test_days***|Number of testing days used|***int***|20|*any*||
 
