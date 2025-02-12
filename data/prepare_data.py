@@ -31,7 +31,7 @@ class DataPreparation(object):
         self.df.to_csv('location_coordinates.csv')
         self.filename = f'{self.data}_{self.epoch_length}_{self.road_speed}_{self.num_locations}_{"bounded" if self.bounded else "unbounded"}_{self.delay_bound}_{self.seed}'
         self.create_traveltime_file()
-        self.dist = self.get_getir_order_distribution()
+        self.dist = self.get_ultra_order_distribution()
 
     def get_variation(self, lats, lons):
         """
@@ -171,7 +171,7 @@ class DataPreparation(object):
             buckets[bucket_num].append(time)
         return [len(buckets.get(i,[])) for i in range(int(1440 / self.epoch_length))]
 
-    def get_getir_order_distribution(self):
+    def get_ultra_order_distribution(self):
         """
         Retrieves and processes order data to get the distribution of orders across time.
 
@@ -180,7 +180,7 @@ class DataPreparation(object):
         """
         dfs = []
         for order_file in range(1,6):
-            with open(f'datasets/Getir/orders_{order_file}.pkl', 'rb') as handle: 
+            with open(f'datasets/Ultra/orders_{order_file}.pkl', 'rb') as handle: 
                 dfs.append(pickle.load(handle))
         df = pd.concat(dfs)
         times = [time for time in df.createdAtSec]

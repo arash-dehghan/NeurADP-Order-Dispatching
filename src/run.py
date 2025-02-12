@@ -89,7 +89,7 @@ if __name__ == '__main__':
 	parser.add_argument('-num_locations', '--num_locations', type=int , default=1000)
 	parser.add_argument('-road_speed', '--road_speed', type=float, default=20.0) #km/h
 	parser.add_argument('-boundedness', '--boundedness', type=str, default='unbounded')
-	parser.add_argument('-delay_type', '--delay_type', type=str, choices=['getir', 'normal'], default='normal')
+	parser.add_argument('-delay_type', '--delay_type', type=str, choices=['ultra', 'normal'], default='normal')
 	parser.add_argument('-breaks_included', '--breaks_included', type=int, default=0)
 	parser.add_argument('-dt', '--delaytime', type=float, default=10)
 	parser.add_argument('-epoch_length', '--epoch_length', type=int , default=5)

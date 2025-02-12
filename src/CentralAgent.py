@@ -44,7 +44,7 @@ class CentralAgent(object):
 		if self.envt.boundedness == 'unbounded':
 			order.deadline = self.envt.current_time + self.envt.travel_time[0][order.destination] + self.envt.delaytime
 		elif self.envt.boundedness == 'bounded':
-			order.deadline = (self.envt.current_time + self.envt.delaytime) if self.envt.delay_type == 'getir' else (self.envt.current_time + self.envt.travel_time[0][order.destination] + self.envt.delaytime)      
+			order.deadline = (self.envt.current_time + self.envt.delaytime) if self.envt.delay_type == 'ultra' else (self.envt.current_time + self.envt.travel_time[0][order.destination] + self.envt.delaytime)      
 		order.id = order_id
 		order.revenue = base_fee + ((self.envt.travel_time[0][order.destination] / 60) * speed) * cost_per_km
 		order.update_state(self.envt.current_time)
